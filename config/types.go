@@ -7,6 +7,7 @@ type ServerConfig struct {
 	Port           int      `env:"SERVER_PORT" default:"8080"`
 	AppSecret      string   `env:"APP_SECRET" default:"mysecret"`
 	AllowedDomains []string `env:"ALLOWED_DOMAINS" default:"localhost"`
+	DevMode        bool     `env:"DEV_MODE" default:"true"`
 }
 
 type MailServerConfig struct {
