@@ -1,0 +1,8 @@
+{% extends 'layouts/generic.django' %}
+{% block content %}
+  <div class="error-container">
+    <h1>{{ ErrorTitle }}</h1>
+    <p>{{ ErrorMessage }}</p>
+    <a href="{% url 'auth.login' %}">Go back home</a>
+  </div>
+{% endblock %}
