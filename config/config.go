@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	Server     ServerConfig
-	MailServer MailServerConfig
-	Database   DatabaseConfig
-	MinIO      MinIOConfig
-	AIServer   AIServerConfig
-	Session    SessionConfig
+	Server     server
+	MailServer mail
+	Database   database
+	MinIO      minio
+	AIServer   ai
+	Session    session
 )
 
 func init() {

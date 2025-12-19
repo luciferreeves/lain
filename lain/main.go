@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"lain/config"
+	"lain/middleware"
+	"lain/processors"
 	"lain/router"
+	"lain/tags"
 	"lain/utils/env"
 	"log"
 
@@ -20,6 +23,7 @@ func main() {
 		log.Println("Warning: AppSecret is set to a default value which is not secure. Please set a strong random secret in your APP_SECRET environment variable or .env file.")
 	}
 
+	tags.Initialize()
 	engine := django.New("./templates", ".django")
 	engine.Reload(config.Server.DevMode)
 	app := fiber.New(fiber.Config{
@@ -36,7 +40,9 @@ func main() {
 	}))
 	app.Use(cors.New())
 
+	processors.Initialize(app)
 	router.Initialize(app)
+	middleware.Initialize(app)
 
 	address := fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port)
 	log.Printf("Starting server at %s\n", address)

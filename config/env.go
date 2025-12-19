@@ -2,15 +2,18 @@ package config
 
 import "time"
 
-type ServerConfig struct {
+type server struct {
 	Host           string   `env:"SERVER_HOST" default:"localhost"`
 	Port           int      `env:"SERVER_PORT" default:"8080"`
 	AppSecret      string   `env:"APP_SECRET" default:"mysecret"`
+	AppName        string   `env:"APP_NAME" default:"Lain Mail"`
+	AppDescription string   `env:"APP_DESCRIPTION" default:"Present day, present time!"`
+	AppEngine      string   `env:"APP_ENGINE" default:"Lain"`
 	AllowedDomains []string `env:"ALLOWED_DOMAINS" default:"localhost"`
 	DevMode        bool     `env:"DEV_MODE" default:"true"`
 }
 
-type MailServerConfig struct {
+type mail struct {
 	IMAPHost string `env:"IMAP_HOST" default:""`
 	IMAPPort int    `env:"IMAP_PORT" default:"993"`
 	IMAPTLS  bool   `env:"IMAP_TLS" default:"true"`
@@ -19,7 +22,7 @@ type MailServerConfig struct {
 	SMTPTLS  bool   `env:"SMTP_TLS" default:"true"`
 }
 
-type DatabaseConfig struct {
+type database struct {
 	Host     string `env:"DB_HOST" default:"localhost"`
 	Port     int    `env:"DB_PORT" default:"5432"`
 	Username string `env:"DB_USER" default:"postgres"`
@@ -28,7 +31,7 @@ type DatabaseConfig struct {
 	SSLMode  string `env:"DB_SSLMODE" default:"disable"`
 }
 
-type MinIOConfig struct {
+type minio struct {
 	Endpoint   string `env:"MINIO_ENDPOINT" default:"localhost:9000"`
 	AccessKey  string `env:"MINIO_ACCESS_KEY" default:""`
 	SecretKey  string `env:"MINIO_SECRET_KEY" default:""`
@@ -36,13 +39,16 @@ type MinIOConfig struct {
 	UseSSL     bool   `env:"MINIO_USE_SSL" default:"false"`
 }
 
-type AIServerConfig struct {
+type ai struct {
 	URL     string `env:"AI_SERVER_URL" default:""`
 	AuthKey string `env:"AI_SERVER_AUTH_KEY" default:""`
 }
 
-type SessionConfig struct {
-	CookieName   string        `env:"SESSION_COOKIE_NAME" default:"lain_session"`
-	Timeout      time.Duration `env:"SESSION_TIMEOUT" default:"24h"`
-	SecureCookie bool          `env:"SESSION_SECURE_COOKIE" default:"false"`
+type session struct {
+	CookieDomain   string        `env:"SESSION_COOKIE_DOMAIN" default:"localhost"`
+	CookieName     string        `env:"SESSION_COOKIE_NAME" default:"lain_session"`
+	CookiePath     string        `env:"SESSION_COOKIE_PATH" default:"/"`
+	CookieSameSite string        `env:"SESSION_COOKIE_SAME_SITE" default:"Lax"`
+	CookieSecure   bool          `env:"SESSION_SECURE_COOKIE" default:"false"`
+	CookieTimeout  time.Duration `env:"SESSION_TIMEOUT" default:"24h"`
 }
