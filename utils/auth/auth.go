@@ -1,7 +1,7 @@
 package auth
 
 import (
-	session "lain/sessions"
+	session "lain/session"
 
 	"github.com/gofiber/fiber/v2"
 )
