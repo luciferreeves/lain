@@ -59,7 +59,7 @@ type Preferences struct {
 	QuoteOriginalMessage         types.EmailReplyOption                `gorm:"type:varchar(50);default:'Place my reply below the original message'"`
 	MessageForwarding            types.MessageForwardingOption         `gorm:"type:varchar(50);default:'Inline'"`
 	HTMLFontFamily               types.EmailHTMLFontFamilyOption       `gorm:"type:varchar(50);default:'Verdana'"`
-	HTMLFontSize                 types.EmailHTMLFontSizeOption         `gorm:"default:'10'"`
+	HTMLFontSize                 types.EmailHTMLFontSizeOption         `gorm:"default:10"`
 	EnableEmoticons              bool                                  `gorm:"default:true"`
 	AttachmentNames              types.EmailAttachementNameStyleOption `gorm:"type:varchar(30);default:'RFC 2047/2231 (Outlook)'"`
 
