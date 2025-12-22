@@ -16,6 +16,15 @@ func BadRequest(context *fiber.Ctx, err error) error {
 	})
 }
 
+func DefaultError(context *fiber.Ctx, err error) error {
+	return shortcuts.RenderError(types.TemplateError{
+		Context:      context,
+		PageTitle:    "Error",
+		ErrorMessage: shortcuts.BuildErrorMessage(err, "An error occurred while processing your request."),
+		StatusCode:   fiber.StatusInternalServerError,
+	})
+}
+
 func Forbidden(context *fiber.Ctx, err error) error {
 	return shortcuts.RenderError(types.TemplateError{
 		Context:      context,

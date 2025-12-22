@@ -21,3 +21,9 @@ func RedirectWithStatus(ctx *fiber.Ctx, routeName string, statusCode int) error 
 	}
 	return ctx.Redirect(path, statusCode)
 }
+
+func RedirectTo(route string) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		return Redirect(ctx, route)
+	}
+}

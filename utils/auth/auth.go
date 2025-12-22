@@ -15,3 +15,12 @@ func IsAuthenticated(context *fiber.Ctx) bool {
 	email := session.Get("email")
 	return email != nil
 }
+
+func RequireAuthentication(handler fiber.Handler) fiber.Handler {
+	return func(context *fiber.Ctx) error {
+		if !IsAuthenticated(context) {
+			return fiber.ErrUnauthorized
+		}
+		return handler(context)
+	}
+}

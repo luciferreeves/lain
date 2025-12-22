@@ -27,10 +27,8 @@ func main() {
 	engine := django.New("./templates", ".django")
 	engine.Reload(config.Server.DevMode)
 	app := fiber.New(fiber.Config{
-		Views: engine,
-		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			return ctx.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
-		}, // Will be extracted to a separate file later
+		Views:        engine,
+		ErrorHandler: router.ErrorHandler,
 	})
 
 	app.Use(logger.New())
