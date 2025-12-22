@@ -1,11 +1,13 @@
 package session
 
 import (
+	"encoding/gob"
 	"fmt"
 	"lain/config"
 	"log"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/storage/postgres/v3"
 )
@@ -13,6 +15,9 @@ import (
 var Store *session.Store
 
 func init() {
+	gob.Register(fiber.Map{})
+	log.Println("gob: registered fiber.Map for session storage")
+
 	storage := postgres.New(postgres.Config{
 		Host:       config.Database.Host,
 		Port:       config.Database.Port,

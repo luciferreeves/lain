@@ -27,3 +27,10 @@ func RedirectTo(route string) fiber.Handler {
 		return Redirect(ctx, route)
 	}
 }
+
+func RedirectWithFlash(context *fiber.Ctx, routeName string, data fiber.Map) error {
+	if err := Flash(context, data); err != nil {
+		return err
+	}
+	return Redirect(context, routeName)
+}

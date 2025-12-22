@@ -6,6 +6,7 @@ import (
 	"lain/session"
 	"lain/types"
 	"lain/utils/crypto"
+	"lain/utils/email"
 	"lain/utils/meta"
 	"lain/utils/shortcuts"
 
@@ -25,6 +26,14 @@ func Login(context *fiber.Ctx) error {
 	if err := context.BodyParser(&formData); err != nil {
 		return BadRequest(context, err)
 	}
+
+	imapClient, err := email.ConnectIMAP(formData.Email, formData.Password)
+	if err != nil {
+		return shortcuts.RedirectWithFlash(context, "auth.login", fiber.Map{
+			"Error": "Invalid email or password.",
+		})
+	}
+	imapClient.Close()
 
 	encryptedPassword, err := crypto.Encrypt(formData.Password)
 	if err != nil {
