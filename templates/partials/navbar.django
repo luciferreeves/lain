@@ -1,0 +1,124 @@
+<nav class="navbar">
+  <nav class="topnav">
+    <div class="nav-title">
+      <div class="nav-item">
+        <a href="{% url 'mail.inbox' %}">{{ AppName }}</a>
+      </div>
+    </div>
+    <div class="nav-links">
+      <div class="nav-item">
+        <a href="{% url 'mail.inbox' %}">Mail</a>
+      </div>
+      <div class="nav-item">
+        <a href="#">Contacts</a>
+      </div>
+      <div class="nav-item">
+        <a href="#">Calendar</a>
+      </div>
+      <div class="nav-item">
+        <a href="#">Settings</a>
+      </div>
+      <div class="nav-item">
+        <a href="{% url 'auth.logout' %}">Logout</a>
+      </div>
+    </div>
+  </nav>
+  <nav class="subnav">
+    <div class="nav-links">
+      <div class="nav-subitem">
+        <a href="{% url 'mail.inbox' %}">Refresh</a>
+      </div>
+      <div class="nav-subitem">
+        <a href="#">Compose</a>
+      </div>
+      <div class="nav-subitem disabled">
+        <a href="#">Reply</a>
+      </div>
+      <div class="nav-subitem disabled">
+        <a href="#">Reply All</a>
+      </div>
+      <div class="nav-subitem disabled options-subitem">
+        <a href="#">Forward</a>
+        <div class="options-dropdown">
+          <div class="options-dropdown-item">
+            <a href="#">Forward as Attachment</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">Forward Inline</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">Resend (bounce)</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-subitem disabled">
+        <a href="#">Delete</a>
+      </div>
+      <div class="nav-subitem disabled">
+        <a href="#">Archive</a>
+      </div>
+      <div class="nav-subitem disabled">
+        <a href="#">Junk</a>
+      </div>
+      <div class="nav-subitem disabled options-subitem">
+        <a href="#">Mark</a>
+        <div class="options-dropdown">
+          <div class="options-dropdown-item">
+            <a href="#">As Read</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">As Unread</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">As Flagged</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">As Unflagged</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-subitem disabled options-subitem">
+        <a href="#">More</a>
+        <div class="options-dropdown">
+          <div class="options-dropdown-item">
+            <a href="#">Print this message</a>
+          </div>
+          <div class="options-dropdown-item flyout-subitem">
+            <a href="#">Download</a>
+            <div class="flyout-dropdown">
+              <div class="flyout-dropdown-item">
+                <a href="#">Source (.eml)</a>
+              </div>
+              <div class="flyout-dropdown-item">
+                <a href="#">Mbox (as .zip)</a>
+              </div>
+              <div class="flyout-dropdown-item">
+                <a href="#">Maildir (as .zip)</a>
+              </div>
+            </div>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">Edit as New</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">View Source</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">Open in New Window</a>
+          </div>
+          <div class="options-dropdown-item">
+            <a href="#">Create Filter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-search">
+      <form action="#" method="get">
+        <input type="text" name="q" placeholder="Search" class="search-input" />
+        <button type="button" id="toggle-filters" class="btn-filters">Filters</button>
+        <button type="submit" class="btn-search">Search</button>
+        {% include 'partials/filters.django' %}
+      </form>
+    </div>
+  </nav>
+</nav>

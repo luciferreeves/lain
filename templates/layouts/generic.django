@@ -2,24 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>{{ Title }} - {{ Appname }}</title>
+    <title>{{ Title }}</title>
     <link rel="stylesheet" href="/static/css/main.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/static/extra/site.webmanifest" />
     {% block head %}
 
     {% endblock %}
   </head>
   <body>
-    <main class="content">
-      {% block content %}
+    {% block body %}
+      <main class="content">
+        {% block content %}
 
-      {% endblock %}
-    </main>
+        {% endblock %}
+      </main>
+    {% endblock %}
 
-    <footer>
-      {{ AppName }} - Powered by {{ AppEngine }} - &copy; <a href="https://shi.foo" target="_blank" rel="noopener noreferrer">shi.foo</a> 2025
-    </footer>
+    {% include 'partials/footer.django' %}
   </body>
   {% block scripts %}
 

@@ -1,0 +1,46 @@
+{% if Email %}
+  <div class="email-header">
+    <h2 class="email-subject">{{ Email.Subject }}</h2>
+
+    <div class="email-actions">
+      <button class="btn-icon" title="Reply">↶</button>
+      <button class="btn-icon" title="Reply All">⇄</button>
+      <button class="btn-icon" title="Forward">→</button>
+      <button class="btn-icon" title="Archive">▼</button>
+      <button class="btn-icon" title="Delete">×</button>
+    </div>
+  </div>
+
+  <div class="email-sender">
+    <div class="sender-info">
+      <strong>{{ Email.FromName }}</strong> &lt;{{ Email.FromAddress }}&gt;
+    </div>
+    <div class="email-date">{{ Email.Date }}</div>
+  </div>
+
+  <div class="email-recipients">
+    <div>
+      <strong>To:</strong> {{ Email.To }}
+    </div>
+    {% if Email.Cc %}
+      <div>
+        <strong>Cc:</strong> {{ Email.Cc }}
+      </div>
+    {% endif %}
+  </div>
+
+  {% if Email.Attachments %}
+    <div class="email-attachments">
+      <strong>Attachments:</strong>
+      {% for attachment in Email.Attachments %}
+        <a href="#" class="attachment">{{ attachment.Filename }} ({{ attachment.Size }})</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="email-body">{{ Email.Body|safe }}</div>
+{% else %}
+  <div class="no-email-selected">
+    <p>Select an email to view</p>
+  </div>
+{% endif %}

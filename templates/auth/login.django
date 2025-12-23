@@ -1,25 +1,27 @@
 {% extends 'layouts/generic.django' %}
 {% block content %}
-  <div class="login-container">
-    <h1>{{ AppName }}</h1>
-    <p class="subtitle">{{ AppDescription }}</p>
+  <div class="login-page">
+    <div class="login-container">
+      <h1>{{ AppName }}</h1>
+      <p class="subtitle">{{ AppDescription }}</p>
 
-    {% if Error %}
-      <div class="error">{{ Error }}</div>
-    {% endif %}
+      {% if Error %}
+        <div class="error">{{ Error }}</div>
+      {% endif %}
 
-    <form method="POST" action="{% url 'auth.login' %}">
-      <div class="field">
-        <label>Email</label>
-        <input type="email" name="email" required autofocus />
-      </div>
+      <form method="POST" action="{% url 'auth.login' %}">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" required autofocus />
+        </div>
 
-      <div class="field">
-        <label>Password</label>
-        <input type="password" name="password" required />
-      </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" required />
+        </div>
 
-      <button type="submit">Login</button>
-    </form>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   </div>
 {% endblock %}

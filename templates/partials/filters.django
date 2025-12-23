@@ -1,0 +1,129 @@
+<div class="filters" id="filters" style="display: none;">
+  <div class="filter-header">
+    <span>Advanced Search</span>
+    <button type="button" class="close-filters" id="close-filters">×</button>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>From</label>
+      <select name="from_operator">
+        <option value="includes">includes</option>
+        <option value="excludes">excludes</option>
+        <option value="equals">equals</option>
+      </select>
+    </div>
+    <div class="tag-input-container">
+      <div class="tags" id="from-tags"></div>
+      <input type="text" class="tag-input" id="from-input" placeholder="Add email..." autocomplete="off" />
+      <input type="hidden" name="from[]" id="from-hidden" />
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>To</label>
+      <select name="to_operator">
+        <option value="includes">includes</option>
+        <option value="excludes">excludes</option>
+        <option value="equals">equals</option>
+      </select>
+    </div>
+    <div class="tag-input-container">
+      <div class="tags" id="to-tags"></div>
+      <input type="text" class="tag-input" id="to-input" placeholder="Add email..." autocomplete="off" />
+      <input type="hidden" name="to[]" id="to-hidden" />
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Subject</label>
+      <select name="subject_operator">
+        <option value="includes">includes</option>
+        <option value="excludes">excludes</option>
+        <option value="equals">equals</option>
+        <option value="startswith">starts</option>
+        <option value="endswith">ends</option>
+      </select>
+    </div>
+    <input type="text" name="subject" class="filter-input" placeholder="Search..." />
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Body</label>
+      <select name="body_operator">
+        <option value="contains">contains</option>
+        <option value="excludes">excludes</option>
+      </select>
+    </div>
+    <input type="text" name="body" class="filter-input" placeholder="Search..." />
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Attachments</label>
+      <select name="filename_operator">
+        <option value="includes">includes</option>
+        <option value="excludes">excludes</option>
+        <option value="equals">equals</option>
+      </select>
+    </div>
+    <div class="tag-input-container">
+      <div class="tags" id="filename-tags"></div>
+      <input type="text" class="tag-input" id="filename-input" placeholder="Add filename..." autocomplete="off" />
+      <input type="hidden" name="filename[]" id="filename-hidden" />
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Flags</label>
+    </div>
+    <div class="flag-checkboxes">
+      <label class="flag-option"><input type="checkbox" name="has_attachment" value="1" /><span>Attachment</span></label>
+      <label class="flag-option"><input type="checkbox" name="is_flagged" value="1" /><span>Flagged</span></label>
+      <label class="flag-option"><input type="checkbox" name="is_unread" value="1" /><span>Unread</span></label>
+      <label class="flag-option"><input type="checkbox" name="is_answered" value="1" /><span>Answered</span></label>
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Date</label>
+    </div>
+    <select name="date_preset" class="filter-input" id="date-preset">
+      <option value="">Any time</option>
+      <option value="today">Today</option>
+      <option value="yesterday">Yesterday</option>
+      <option value="last7days">Last 7 days</option>
+      <option value="last30days">Last 30 days</option>
+      <option value="custom">Custom range</option>
+    </select>
+    <div id="custom-date-range" style="display: none; margin-top: 5px;">
+      <input type="date" name="date_from" style="margin-bottom: 4px;" />
+      <input type="date" name="date_to" />
+    </div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label-row">
+      <label>Search In</label>
+    </div>
+    <select name="scope" class="filter-input" id="scope-select">
+      <option value="current">Current folder</option>
+      <option value="recursive">Current + subfolders</option>
+      <option value="all">All folders</option>
+      <option value="custom">Custom folders</option>
+    </select>
+    <input type="text" name="custom_folders" class="filter-input" placeholder="Folder1, Folder2..." style="margin-top: 5px; display: none;" id="custom-folders-input" />
+  </div>
+
+  <div class="filter-actions">
+    <button type="button" class="btn-clear" id="clear-filters">Clear</button>
+    <button type="submit" class="btn-apply">Apply</button>
+  </div>
+</div>
+
+<div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display: none;"></div>
