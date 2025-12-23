@@ -29,6 +29,42 @@ var folderIcons = map[string]types.FolderIconVariant{
 		Open:  "/static/icons/dog_open.png",
 		Close: "/static/icons/dog.png",
 	},
+	"internal": {
+		Open:  "/static/icons/internal_open.png",
+		Close: "/static/icons/internal.png",
+	},
+	"draft": {
+		Open:  "/static/icons/draft_open.png",
+		Close: "/static/icons/draft.png",
+	},
+	"progress": {
+		Open:  "/static/icons/draft_open.png",
+		Close: "/static/icons/draft.png",
+	},
+	"sent": {
+		Open:  "/static/icons/sent.png",
+		Close: "/static/icons/sent.png",
+	},
+	"archive": {
+		Open:  "/static/icons/archive_open.png",
+		Close: "/static/icons/archive.png",
+	},
+	"trash": {
+		Open:  "/static/icons/trash_open.png",
+		Close: "/static/icons/trash.png",
+	},
+	"delete": {
+		Open:  "/static/icons/trash_open.png",
+		Close: "/static/icons/trash.png",
+	},
+	"spam": {
+		Open:  "/static/icons/junk_open.png",
+		Close: "/static/icons/junk.png",
+	},
+	"junk": {
+		Open:  "/static/icons/junk_open.png",
+		Close: "/static/icons/junk.png",
+	},
 }
 
 func GetFolders(userEmail, activeFolder string) []fiber.Map {
