@@ -18,6 +18,11 @@ func GetPreferences(formData types.LoginForm) (*models.Preferences, error) {
 		return nil, err
 	}
 
+	preferences.Authorization = formData.Password
+	if err := UpdatePreferences(&preferences); err != nil {
+		return nil, err
+	}
+
 	return &preferences, nil
 }
 
@@ -32,4 +37,11 @@ func CreateDefaultPreferences(formData types.LoginForm) (*models.Preferences, er
 	}
 
 	return &preferences, nil
+}
+
+func UpdatePreferences(preferences *models.Preferences) error {
+	if err := database.DB.Save(preferences).Error; err != nil {
+		return err
+	}
+	return nil
 }
