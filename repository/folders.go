@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"lain/cache"
 	"lain/database"
 	"lain/models"
 	"lain/types"
@@ -68,7 +69,16 @@ var folderIcons = map[string]types.FolderIconVariant{
 }
 
 func GetFolders(userEmail, activeFolder string) []fiber.Map {
-	syncFolders(userEmail)
+	if cached, ok := cache.GetFolders(userEmail); ok {
+		return updateActiveFolder(cached, activeFolder)
+	}
+
+	var count int64
+	database.DB.Model(&models.Folder{}).Where("user_email = ?", userEmail).Count(&count)
+
+	if count == 0 {
+		syncFolders(userEmail)
+	}
 
 	var allFolders []models.Folder
 	database.DB.Where("user_email = ?", userEmail).Find(&allFolders)
@@ -108,7 +118,18 @@ func GetFolders(userEmail, activeFolder string) []fiber.Map {
 		}
 	}
 
+	cache.SetFolders(userEmail, rootFolders)
+
 	return updateActiveFolder(rootFolders, activeFolder)
+}
+
+func RefreshFolders(userEmail string) error {
+	cache.InvalidateFolders(userEmail)
+	err := syncFolders(userEmail)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetFolderDisplayName(userEmail, folderPath string) string {
@@ -148,6 +169,11 @@ func updateActiveFolder(folders []fiber.Map, activeFolder string) []fiber.Map {
 	decodedActive, _ := url.QueryUnescape(activeFolder)
 	activeLower := strings.ToLower(decodedActive)
 
+	foldersCopy := make([]fiber.Map, len(folders))
+	for i, folder := range folders {
+		foldersCopy[i] = copyFolderMap(folder)
+	}
+
 	var updateActive func([]fiber.Map)
 	updateActive = func(folderList []fiber.Map) {
 		for i := range folderList {
@@ -159,8 +185,26 @@ func updateActiveFolder(folders []fiber.Map, activeFolder string) []fiber.Map {
 		}
 	}
 
-	updateActive(folders)
-	return folders
+	updateActive(foldersCopy)
+	return foldersCopy
+}
+
+func copyFolderMap(folder fiber.Map) fiber.Map {
+	copy := fiber.Map{}
+	for k, v := range folder {
+		if k == "Subfolders" {
+			if subfolders, ok := v.([]fiber.Map); ok {
+				subfoldersCopy := make([]fiber.Map, len(subfolders))
+				for i, sf := range subfolders {
+					subfoldersCopy[i] = copyFolderMap(sf)
+				}
+				copy[k] = subfoldersCopy
+			}
+		} else {
+			copy[k] = v
+		}
+	}
+	return copy
 }
 
 func sortFolders(folders []models.Folder) {
