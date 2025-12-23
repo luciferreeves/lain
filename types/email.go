@@ -10,3 +10,8 @@ type IMAPFolder struct {
 	Name        string
 	HasChildren bool
 }
+
+type FolderIconVariant struct {
+	Open  string
+	Close string
+}

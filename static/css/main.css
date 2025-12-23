@@ -118,7 +118,10 @@ footer a:hover {
     padding: 3px 8px;
     font-size: 10px;
     cursor: pointer;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-direction: column;
 }
 
 .nav-subitem a:hover {
@@ -129,6 +132,11 @@ footer a:hover {
 .nav-subitem.disabled a {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.nav-subitem a img {
+    width: 16px;
+    height: 16px;
 }
 
 .options-dropdown {
@@ -530,10 +538,11 @@ input[type="date"]:focus {
 .folder-item a {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     padding: 5px 8px;
     color: var(--text-secondary);
     font-size: 11px;
+    border-left: 2px solid var(--bg-secondary);
 }
 
 .folder-item a:hover {
@@ -548,8 +557,8 @@ input[type="date"]:focus {
 }
 
 .folder-icon {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
 }
 
 .folder-name {

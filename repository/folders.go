@@ -3,6 +3,7 @@ package repository
 import (
 	"lain/database"
 	"lain/models"
+	"lain/types"
 	"lain/utils/crypto"
 	"lain/utils/email"
 	"net/url"
@@ -11,7 +12,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const defaultFolderIcon = "/static/images/icons/folder.png"
+var folderIcons = map[string]types.FolderIconVariant{
+	"default": {
+		Open:  "/static/icons/folder_open.png",
+		Close: "/static/icons/folder.png",
+	},
+	"inbox": {
+		Open:  "/static/icons/inbox_open.png",
+		Close: "/static/icons/inbox.png",
+	},
+	"encrypt": {
+		Open:  "/static/icons/encrypt_open.png",
+		Close: "/static/icons/encrypt.png",
+	},
+	"dog": {
+		Open:  "/static/icons/dog_open.png",
+		Close: "/static/icons/dog.png",
+	},
+}
 
 func GetFolders(userEmail, activeFolder string) []fiber.Map {
 	syncFolders(userEmail)
@@ -25,18 +43,14 @@ func GetFolders(userEmail, activeFolder string) []fiber.Map {
 	var rootFolders []fiber.Map
 
 	for _, folder := range allFolders {
-		icon := folder.Icon
-		if icon == "" {
-			icon = defaultFolderIcon
-		}
-
 		displayName := getDisplayName(folder.IMAPName)
 
 		folderData := fiber.Map{
 			"ID":          folder.ID,
 			"Name":        displayName,
 			"IMAPName":    folder.IMAPName,
-			"Icon":        icon,
+			"IconOpen":    folder.IconOpen,
+			"IconClose":   folder.IconClose,
 			"UnreadCount": folder.UnreadCount,
 			"Active":      false,
 			"ParentID":    folder.ParentID,
@@ -127,6 +141,26 @@ func sortFolders(folders []models.Folder) {
 	}
 }
 
+func getFolderType(folderName string) string {
+	nameLower := strings.ToLower(folderName)
+
+	if strings.Contains(folderName, "/") {
+		parts := strings.Split(folderName, "/")
+		nameLower = strings.ToLower(parts[len(parts)-1])
+	}
+
+	for iconType := range folderIcons {
+		if iconType == "default" {
+			continue
+		}
+		if strings.Contains(nameLower, iconType) {
+			return iconType
+		}
+	}
+
+	return "default"
+}
+
 func syncFolders(userEmail string) error {
 	var prefs models.Preferences
 	if err := database.DB.Where("email = ?", userEmail).First(&prefs).Error; err != nil {
@@ -157,13 +191,16 @@ func syncFolders(userEmail string) error {
 		result := database.DB.Where("user_email = ? AND LOWER(imap_name) = ?", userEmail, imapNameLower).First(&folder)
 
 		sortOrder := getSortOrder(imapFolder.Name, i)
+		folderType := getFolderType(imapFolder.Name)
+		iconVariant := folderIcons[folderType]
 
 		if result.Error != nil {
 			folder = models.Folder{
 				UserEmail: userEmail,
 				Name:      imapFolder.Name,
 				IMAPName:  imapFolder.Name,
-				Icon:      defaultFolderIcon,
+				IconOpen:  iconVariant.Open,
+				IconClose: iconVariant.Close,
 				SortOrder: sortOrder,
 			}
 			database.DB.Create(&folder)
@@ -171,9 +208,8 @@ func syncFolders(userEmail string) error {
 		} else {
 			folder.Name = imapFolder.Name
 			folder.SortOrder = sortOrder
-			if folder.Icon == "" {
-				folder.Icon = defaultFolderIcon
-			}
+			folder.IconOpen = iconVariant.Open
+			folder.IconClose = iconVariant.Close
 			database.DB.Save(&folder)
 			foldersByName[imapNameLower] = folder.ID
 		}

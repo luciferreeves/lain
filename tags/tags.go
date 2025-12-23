@@ -15,7 +15,7 @@ func Initialize() {
 
 	tags := []templateTag{
 		{"url", url},
-		{"static", static},
+		// {"static", static},
 	}
 
 	for _, t := range tags {
