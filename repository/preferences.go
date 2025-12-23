@@ -26,6 +26,16 @@ func GetPreferences(formData types.LoginForm) (*models.Preferences, error) {
 	return &preferences, nil
 }
 
+func GetPreferencesByEmail(email string) (*models.Preferences, error) {
+	var preferences models.Preferences
+
+	if err := database.DB.Where("email = ?", email).First(&preferences).Error; err != nil {
+		return nil, err
+	}
+
+	return &preferences, nil
+}
+
 func CreateDefaultPreferences(formData types.LoginForm) (*models.Preferences, error) {
 	preferences := models.Preferences{
 		Email:         formData.Email,

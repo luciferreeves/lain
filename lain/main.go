@@ -8,6 +8,7 @@ import (
 	"lain/router"
 	"lain/tags"
 	"lain/utils/env"
+	"lain/utils/storage"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,6 +23,11 @@ func main() {
 	if config.Server.AppSecret == env.Defaults(&config.Server).AppSecret {
 		log.Println("Warning: AppSecret is set to a default value which is not secure. Please set a strong random secret in your APP_SECRET environment variable or .env file.")
 	}
+
+	if err := storage.InitMinIO(); err != nil {
+		log.Fatalf("Failed to initialize MinIO: %v", err)
+	}
+	log.Println("MinIO initialized successfully")
 
 	tags.Initialize()
 	engine := django.New("./templates", ".django")

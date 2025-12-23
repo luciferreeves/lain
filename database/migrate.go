@@ -6,6 +6,7 @@ func migrate() error {
 	err := DB.AutoMigrate(
 		&models.Preferences{},
 		&models.Folder{},
+		&models.Email{},
 	)
 	return err
 }
