@@ -115,9 +115,7 @@
     <div class="nav-search">
       <form action="#" method="get">
         <input type="text" name="q" placeholder="Search" class="search-input" />
-        <button type="button" id="toggle-filters" class="btn-filters">
-          Filters
-        </button>
+        <button type="button" id="toggle-filters" class="btn-filters">Filters</button>
         <button type="submit" class="btn-search">Search</button>
         {% include 'partials/filters.django' %}
       </form>

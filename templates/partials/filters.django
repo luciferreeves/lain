@@ -15,13 +15,7 @@
     </div>
     <div class="tag-input-container">
       <div class="tags" id="from-tags"></div>
-      <input
-        type="text"
-        class="tag-input"
-        id="from-input"
-        placeholder="Add email..."
-        autocomplete="off"
-      />
+      <input type="text" class="tag-input" id="from-input" placeholder="Add email..." autocomplete="off" />
       <input type="hidden" name="from[]" id="from-hidden" />
     </div>
   </div>
@@ -37,13 +31,7 @@
     </div>
     <div class="tag-input-container">
       <div class="tags" id="to-tags"></div>
-      <input
-        type="text"
-        class="tag-input"
-        id="to-input"
-        placeholder="Add email..."
-        autocomplete="off"
-      />
+      <input type="text" class="tag-input" id="to-input" placeholder="Add email..." autocomplete="off" />
       <input type="hidden" name="to[]" id="to-hidden" />
     </div>
   </div>
@@ -59,12 +47,7 @@
         <option value="endswith">ends</option>
       </select>
     </div>
-    <input
-      type="text"
-      name="subject"
-      class="filter-input"
-      placeholder="Search..."
-    />
+    <input type="text" name="subject" class="filter-input" placeholder="Search..." />
   </div>
 
   <div class="filter-section">
@@ -75,12 +58,7 @@
         <option value="excludes">excludes</option>
       </select>
     </div>
-    <input
-      type="text"
-      name="body"
-      class="filter-input"
-      placeholder="Search..."
-    />
+    <input type="text" name="body" class="filter-input" placeholder="Search..." />
   </div>
 
   <div class="filter-section">
@@ -94,13 +72,7 @@
     </div>
     <div class="tag-input-container">
       <div class="tags" id="filename-tags"></div>
-      <input
-        type="text"
-        class="tag-input"
-        id="filename-input"
-        placeholder="Add filename..."
-        autocomplete="off"
-      />
+      <input type="text" class="tag-input" id="filename-input" placeholder="Add filename..." autocomplete="off" />
       <input type="hidden" name="filename[]" id="filename-hidden" />
     </div>
   </div>
@@ -157,14 +129,7 @@
       <option value="all">All folders</option>
       <option value="custom">Custom folders</option>
     </select>
-    <input
-      type="text"
-      name="custom_folders"
-      class="filter-input"
-      placeholder="Folder1, Folder2..."
-      style="margin-top: 5px; display: none"
-      id="custom-folders-input"
-    />
+    <input type="text" name="custom_folders" class="filter-input" placeholder="Folder1, Folder2..." style="margin-top: 5px; display: none" id="custom-folders-input" />
   </div>
 
   <div class="filter-actions">
@@ -173,8 +138,4 @@
   </div>
 </div>
 
-<div
-  class="autocomplete-dropdown"
-  id="autocomplete-dropdown"
-  style="display: none"
-></div>
+<div class="autocomplete-dropdown" id="autocomplete-dropdown" style="display: none"></div>

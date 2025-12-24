@@ -1,7 +1,5 @@
 <footer>
   {{ AppName }} - Powered by {{ AppEngine }} - &copy;
-  <a href="https://shi.foo" target="_blank" rel="noopener noreferrer">
-    shi.foo
-  </a>
+  <a href="https://shi.foo" target="_blank" rel="noopener noreferrer">shi.foo</a>
   2025
 </footer>

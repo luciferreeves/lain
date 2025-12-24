@@ -266,6 +266,10 @@ func syncFolders(userEmail string) error {
 	foldersByName := make(map[string]uint)
 
 	for i, imapFolder := range imapFolders {
+		if strings.HasPrefix(imapFolder.Name, "Virtual") || strings.Contains(imapFolder.Name, "/Virtual") {
+			continue
+		}
+
 		var folder models.Folder
 		imapNameLower := strings.ToLower(imapFolder.Name)
 		result := database.DB.Where("user_email = ? AND LOWER(imap_name) = ?", userEmail, imapNameLower).First(&folder)
@@ -296,6 +300,10 @@ func syncFolders(userEmail string) error {
 	}
 
 	for _, imapFolder := range imapFolders {
+		if strings.HasPrefix(imapFolder.Name, "Virtual") || strings.Contains(imapFolder.Name, "/Virtual") {
+			continue
+		}
+
 		if strings.Contains(imapFolder.Name, "/") {
 			parts := strings.Split(imapFolder.Name, "/")
 			if len(parts) > 1 {

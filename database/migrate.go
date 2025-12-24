@@ -7,6 +7,7 @@ func migrate() error {
 		&models.Preferences{},
 		&models.Folder{},
 		&models.Email{},
+		&models.Attachment{},
 	)
 	return err
 }
