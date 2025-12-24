@@ -1,5 +1,3 @@
-{% extends 'layouts/mailbox.django' %}
-
-{% block scripts %}
-  <script src="{% static 'js/filters.js' %}"></script>
+{% extends 'layouts/mailbox.django' %} {% block scripts %}
+<script src="{% static 'js/filters.js' %}"></script>
 {% endblock %}

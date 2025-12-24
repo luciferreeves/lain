@@ -1,59 +1,55 @@
-{% extends 'layouts/generic.django' %}
+{% extends 'layouts/generic.django' %} {% block body %} {% include
+'partials/navbar.django' %}
+<main>{% block content %} {% endblock %}</main>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Handle dropdown clicks
+    document.querySelectorAll(".options-subitem > a").forEach(function (item) {
+      item.addEventListener("click", function (e) {
+        e.preventDefault();
+        const parent = this.parentElement;
 
-{% block body %}
-  {% include 'partials/navbar.django' %}
-  <main>
-    {% block content %}
-
-    {% endblock %}
-  </main>
-{% endblock %}
-
-{% block scripts %}
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Handle dropdown clicks
-      document.querySelectorAll('.options-subitem > a').forEach(function (item) {
-        item.addEventListener('click', function (e) {
-          e.preventDefault()
-          const parent = this.parentElement
-    
-          if (parent.classList.contains('disabled')) {
-            return
-          }
-    
-          document.querySelectorAll('.options-subitem.open').forEach(function (other) {
-            if (other !== parent) {
-              other.classList.remove('open')
-            }
-          })
-    
-          parent.classList.toggle('open')
-        })
-      })
-    
-      document.addEventListener('click', function (e) {
-        if (!e.target.closest('.options-subitem')) {
-          document.querySelectorAll('.options-subitem.open').forEach(function (item) {
-            item.classList.remove('open')
-          })
+        if (parent.classList.contains("disabled")) {
+          return;
         }
-      })
-    
-      // Toggle search filters
-      const toggleBtn = document.getElementById('toggle-filters')
-      const filters = document.getElementById('search-filters')
-    
-      if (toggleBtn && filters) {
-        toggleBtn.addEventListener('click', function (e) {
-          e.preventDefault()
-          if (filters.style.display === 'none') {
-            filters.style.display = 'block'
-          } else {
-            filters.style.display = 'none'
-          }
-        })
+
+        document
+          .querySelectorAll(".options-subitem.open")
+          .forEach(function (other) {
+            if (other !== parent) {
+              other.classList.remove("open");
+            }
+          });
+
+        parent.classList.toggle("open");
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".options-subitem")) {
+        document
+          .querySelectorAll(".options-subitem.open")
+          .forEach(function (item) {
+            item.classList.remove("open");
+          });
       }
-    })
-  </script>
+    });
+
+    // Toggle search filters
+    const toggleBtn = document.getElementById("toggle-filters");
+    const filters = document.getElementById("search-filters");
+
+    if (toggleBtn && filters) {
+      toggleBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (filters.style.display === "none") {
+          filters.style.display = "block";
+        } else {
+          filters.style.display = "none";
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}

@@ -1,32 +1,35 @@
 <div class="pane">
-  {% if Emails %}
-    {% for email in Emails %}
-      <div class="email-row {% if not email.IsRead %}unread{% endif %} {% if email.Active %}active{% endif %}" data-email-id="{{ email.ID }}">
-        <div class="email-checkbox">
-          <input type="checkbox" />
-        </div>
-
-        <div class="email-flag {% if email.IsFlagged %}flagged{% endif %}">
-          {% comment %} <img src="{% static 'icons/flag.svg' %}" alt="Flag" /> (We will write the static filter later){% endcomment %}
-        </div>
-
-        <div class="email-info">
-          <div class="email-from">{{ email.FromName }}</div>
-          <div class="email-subject">{{ email.Subject }}</div>
-          <div class="email-preview">{{ email.Preview }}</div>
-        </div>
-
-        <div class="email-meta">
-          {% if email.HasAttachments %}
-            <span class="attachment-icon">📎</span>
-          {% endif %}
-          <span class="email-date">{{ email.Date }}</span>
-        </div>
-      </div>
-    {% endfor %}
-  {% else %}
-    <div class="empty-state">
-      <p>No emails in this folder</p>
+  {% if Emails %} {% for email in Emails %}
+  <div
+    class="email-row {% if not email.IsRead %}unread{% endif %} {% if email.Active %}active{% endif %}"
+    data-email-id="{{ email.ID }}"
+  >
+    <div class="email-checkbox">
+      <input type="checkbox" />
     </div>
+
+    <div class="email-flag {% if email.IsFlagged %}flagged{% endif %}">
+      {% comment %}
+      <img src="{% static 'icons/flag.svg' %}" alt="Flag" />
+      (We will write the static filter later){% endcomment %}
+    </div>
+
+    <div class="email-info">
+      <div class="email-from">{{ email.FromName }}</div>
+      <div class="email-subject">{{ email.Subject }}</div>
+      <div class="email-preview">{{ email.Preview }}</div>
+    </div>
+
+    <div class="email-meta">
+      {% if email.HasAttachments %}
+      <span class="attachment-icon">📎</span>
+      {% endif %}
+      <span class="email-date">{{ email.Date }}</span>
+    </div>
+  </div>
+  {% endfor %} {% else %}
+  <div class="empty-state">
+    <p>No emails in this folder</p>
+  </div>
   {% endif %}
 </div>

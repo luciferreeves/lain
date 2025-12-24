@@ -1,40 +1,46 @@
 <ul class="folder-list">
   {% for folder in Folders %}
-    <li class="folder-item {% if folder.Active %}active{% endif %}">
-      <a href="/mail/{{ folder.IMAPName|lower }}">
-        <img src="{% if folder.Active %}
+  <li class="folder-item {% if folder.Active %}active{% endif %}">
+    <a href="/mail/{{ folder.IMAPName|lower }}">
+      <img
+        src="{% if folder.Active %}
             {{ folder.IconOpen }}
           {% else %}
             {{ folder.IconClose }}
           {% endif %}"
-          alt="{{ folder.Name }}"
-          class="folder-icon" />
-        <span class="folder-name">{{ folder.Name }}</span>
-        {% if folder.UnreadCount > 0 %}
-          <span class="folder-count">{{ folder.UnreadCount }}</span>
-        {% endif %}
-      </a>
-      {% if folder.Subfolders %}
-        <ul class="subfolder-list">
-          {% for subfolder in folder.Subfolders %}
-            <li class="folder-item subfolder {% if subfolder.Active %}active{% endif %}">
-              <a href="/mail/{{ subfolder.IMAPName|lower }}">
-                <img src="{% if subfolder.Active %}
+        alt="{{ folder.Name }}"
+        class="folder-icon"
+      />
+      <span class="folder-name">{{ folder.Name }}</span>
+      {% if folder.UnreadCount > 0 %}
+      <span class="folder-count">{{ folder.UnreadCount }}</span>
+      {% endif %}
+    </a>
+    {% if folder.Subfolders %}
+    <ul class="subfolder-list">
+      {% for subfolder in folder.Subfolders %}
+      <li
+        class="folder-item subfolder {% if subfolder.Active %}active{% endif %}"
+      >
+        <a href="/mail/{{ subfolder.IMAPName|lower }}">
+          <img
+            src="{% if subfolder.Active %}
                     {{ subfolder.IconOpen }}
                   {% else %}
                     {{ subfolder.IconClose }}
                   {% endif %}"
-                  alt="{{ subfolder.Name }}"
-                  class="folder-icon" />
-                <span class="folder-name">{{ subfolder.Name }}</span>
-                {% if subfolder.UnreadCount > 0 %}
-                  <span class="folder-count">{{ subfolder.UnreadCount }}</span>
-                {% endif %}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    </li>
+            alt="{{ subfolder.Name }}"
+            class="folder-icon"
+          />
+          <span class="folder-name">{{ subfolder.Name }}</span>
+          {% if subfolder.UnreadCount > 0 %}
+          <span class="folder-count">{{ subfolder.UnreadCount }}</span>
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
   {% endfor %}
 </ul>
