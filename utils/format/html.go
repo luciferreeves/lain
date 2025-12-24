@@ -1,9 +1,64 @@
 package format
 
 import (
+	"html"
 	"regexp"
 	"strings"
 )
+
+func SanitizeHTML(htmlContent string) string {
+	// Remove dangerous tags
+	htmlContent = removeDangerousTags(htmlContent)
+
+	// Remove inline event handlers
+	htmlContent = removeEventHandlers(htmlContent)
+
+	// Remove javascript: protocol
+	htmlContent = removeJavascriptProtocol(htmlContent)
+
+	// Sanitize styles
+	htmlContent = sanitizeStyles(htmlContent)
+
+	return htmlContent
+}
+
+func removeDangerousTags(html string) string {
+	dangerousTags := []string{
+		"script", "iframe", "object", "embed", "applet",
+		"meta", "link", "base", "form", "input", "button",
+	}
+
+	for _, tag := range dangerousTags {
+		regex := regexp.MustCompile(`(?i)<` + tag + `[^>]*>[\s\S]*?</` + tag + `>`)
+		html = regex.ReplaceAllString(html, "")
+		regex = regexp.MustCompile(`(?i)<` + tag + `[^>]*>`)
+		html = regex.ReplaceAllString(html, "")
+	}
+
+	return html
+}
+
+func removeEventHandlers(html string) string {
+	eventHandlers := regexp.MustCompile(`(?i)\s*on\w+\s*=\s*["'][^"']*["']`)
+	return eventHandlers.ReplaceAllString(html, "")
+}
+
+func removeJavascriptProtocol(html string) string {
+	jsProtocol := regexp.MustCompile(`(?i)javascript:`)
+	return jsProtocol.ReplaceAllString(html, "")
+}
+
+func sanitizeStyles(html string) string {
+	// Remove dangerous CSS properties
+	dangerousStyles := []string{"behavior", "expression", "binding", "import", "moz-binding"}
+
+	for _, style := range dangerousStyles {
+		regex := regexp.MustCompile(`(?i)` + style + `\s*:\s*[^;]+;?`)
+		html = regex.ReplaceAllString(html, "")
+	}
+
+	return html
+}
 
 func GenerateSnippet(bodyText, bodyHTML string) string {
 	text := bodyText
@@ -70,4 +125,8 @@ func StripHTML(html string) string {
 	}
 
 	return strings.TrimSpace(strings.Join(cleanLines, " "))
+}
+
+func DecodeHTML(text string) string {
+	return html.UnescapeString(text)
 }

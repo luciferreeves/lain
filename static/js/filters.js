@@ -1,8 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
     const tagInputs = {
-        'from': { input: document.getElementById('from-input'), tags: document.getElementById('from-tags'), hidden: document.getElementById('from-hidden'), values: [] },
-        'to': { input: document.getElementById('to-input'), tags: document.getElementById('to-tags'), hidden: document.getElementById('to-hidden'), values: [] },
-        'filename': { input: document.getElementById('filename-input'), tags: document.getElementById('filename-tags'), hidden: document.getElementById('filename-hidden'), values: [] }
+        'from': {
+            input: document.getElementById('from-input'),
+            tags: document.getElementById('from-tags'),
+            hidden: document.getElementById('from-hidden'),
+            values: []
+        },
+        'to': {
+            input: document.getElementById('to-input'),
+            tags: document.getElementById('to-tags'),
+            hidden: document.getElementById('to-hidden'),
+            values: []
+        },
+        'filename': {
+            input: document.getElementById('filename-input'),
+            tags: document.getElementById('filename-tags'),
+            hidden: document.getElementById('filename-hidden'),
+            values: []
+        }
     };
 
     const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
@@ -10,43 +25,45 @@ document.addEventListener('DOMContentLoaded', function () {
     let autocompleteResults = [];
     let selectedIndex = -1;
 
+    // Initialize tag inputs
     Object.keys(tagInputs).forEach(key => {
         const config = tagInputs[key];
-
         if (!config.input) return;
 
-        config.input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const value = this.value.trim();
-                if (value && !config.values.includes(value)) {
-                    addTag(key, value);
-                    this.value = '';
-                }
-            } else if (e.key === 'Backspace' && this.value === '' && config.values.length > 0) {
-                removeTag(key, config.values.length - 1);
-            } else if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                navigateAutocomplete(1);
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                navigateAutocomplete(-1);
-            }
-        });
-
-        config.input.addEventListener('input', function () {
-            if (this.value.length >= 2) {
-                activeTagInput = key;
-                showAutocomplete(this, this.value);
-            } else {
-                hideAutocomplete();
-            }
-        });
-
-        config.input.addEventListener('blur', function () {
-            setTimeout(() => hideAutocomplete(), 200);
-        });
+        config.input.addEventListener('keydown', handleTagInput.bind(null, key));
+        config.input.addEventListener('input', handleAutocomplete.bind(null, key));
+        config.input.addEventListener('blur', () => setTimeout(hideAutocomplete, 200));
     });
+
+    function handleTagInput(type, e) {
+        const config = tagInputs[type];
+
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const value = e.target.value.trim();
+            if (value && !config.values.includes(value)) {
+                addTag(type, value);
+                e.target.value = '';
+            }
+        } else if (e.key === 'Backspace' && e.target.value === '' && config.values.length > 0) {
+            removeTag(type, config.values.length - 1);
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            navigateAutocomplete(1);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            navigateAutocomplete(-1);
+        }
+    }
+
+    function handleAutocomplete(type, e) {
+        if (e.target.value.length >= 2) {
+            activeTagInput = type;
+            showAutocomplete(e.target, e.target.value);
+        } else {
+            hideAutocomplete();
+        }
+    }
 
     function addTag(type, value) {
         const config = tagInputs[type];
@@ -54,15 +71,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const tag = document.createElement('div');
         tag.className = 'tag';
-        tag.innerHTML = `
-      <span>${value}</span>
-      <button type="button" class="tag-remove" data-index="${config.values.length - 1}">×</button>
-    `;
 
-        tag.querySelector('.tag-remove').addEventListener('click', function () {
+        const span = document.createElement('span');
+        span.textContent = value;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'tag-remove';
+        button.dataset.index = config.values.length - 1;
+        button.textContent = '×';
+        button.addEventListener('click', function () {
             removeTag(type, parseInt(this.dataset.index));
         });
 
+        tag.appendChild(span);
+        tag.appendChild(button);
         config.tags.appendChild(tag);
         config.hidden.value = config.values.join(',');
     }
@@ -78,21 +101,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const config = tagInputs[type];
         config.tags.innerHTML = '';
         config.values.forEach((value, index) => {
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `
-        <span>${value}</span>
-        <button type="button" class="tag-remove" data-index="${index}">×</button>
-      `;
-            tag.querySelector('.tag-remove').addEventListener('click', function () {
-                removeTag(type, index);
-            });
-            config.tags.appendChild(tag);
+            addTag(type, value);
         });
     }
 
     function showAutocomplete(input, query) {
-        const suggestions = getSuggestions(query);
+        // TODO: Replace with actual API call to fetch contacts
+        const suggestions = [];
+
         if (suggestions.length === 0) {
             hideAutocomplete();
             return;
@@ -105,15 +121,15 @@ document.addEventListener('DOMContentLoaded', function () {
         autocompleteDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
         autocompleteDropdown.style.left = rect.left + 'px';
         autocompleteDropdown.style.width = rect.width + 'px';
+        autocompleteDropdown.innerHTML = '';
 
-        autocompleteDropdown.innerHTML = suggestions.map((item, index) =>
-            `<div class="autocomplete-item" data-index="${index}">${item}</div>`
-        ).join('');
-
-        autocompleteDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
-            item.addEventListener('click', function () {
-                selectAutocomplete(parseInt(this.dataset.index));
-            });
+        suggestions.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            div.dataset.index = index;
+            div.textContent = item;
+            div.addEventListener('click', () => selectAutocomplete(index));
+            autocompleteDropdown.appendChild(div);
         });
 
         autocompleteDropdown.style.display = 'block';
@@ -152,47 +168,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function getSuggestions(query) {
-        const mockSuggestions = [
-            'john@example.com',
-            'jane@example.com',
-            'support@example.com',
-            'admin@example.com',
-            'info@example.com'
-        ];
-        return mockSuggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()));
-    }
-
-    document.querySelectorAll('.options-subitem > a').forEach(function (item) {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const parent = this.parentElement;
-
-            if (parent.classList.contains('disabled')) {
-                return;
-            }
-
-            document.querySelectorAll('.options-subitem.open').forEach(function (other) {
-                if (other !== parent) {
-                    other.classList.remove('open');
-                }
-            });
-
-            parent.classList.toggle('open');
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!e.target.closest('.options-subitem')) {
-            document.querySelectorAll('.options-subitem.open').forEach(function (item) {
-                item.classList.remove('open');
-            });
-        }
-    });
-
+    // Filter controls
     const toggleBtn = document.getElementById('toggle-filters');
     const filters = document.getElementById('filters');
     const closeBtn = document.getElementById('close-filters');
+    const clearBtn = document.getElementById('clear-filters');
 
     if (toggleBtn && filters) {
         toggleBtn.addEventListener('click', function (e) {
@@ -202,12 +182,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (closeBtn && filters) {
-        closeBtn.addEventListener('click', function () {
-            filters.style.display = 'none';
-        });
+        closeBtn.addEventListener('click', () => filters.style.display = 'none');
     }
 
-    const clearBtn = document.getElementById('clear-filters');
     if (clearBtn) {
         clearBtn.addEventListener('click', function () {
             Object.keys(tagInputs).forEach(key => {
@@ -221,25 +198,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Date preset handling
     const datePreset = document.getElementById('date-preset');
     const customDateRange = document.getElementById('custom-date-range');
+
     if (datePreset && customDateRange) {
         datePreset.addEventListener('change', function () {
             customDateRange.style.display = this.value === 'custom' ? 'block' : 'none';
         });
     }
 
-    document.addEventListener('click', function (e) {
-        const filters = document.getElementById('filters');
-        const toggleBtn = document.getElementById('toggle-filters');
-
-        if (filters && toggleBtn) {
-            if (!filters.contains(e.target) && !toggleBtn.contains(e.target)) {
-                filters.style.display = 'none';
-            }
-        }
-    });
-
+    // Scope handling
     const scopeSelect = document.querySelector('select[name="scope"]');
     const customFoldersInput = document.getElementById('custom-folders-input');
 
@@ -248,4 +217,13 @@ document.addEventListener('DOMContentLoaded', function () {
             customFoldersInput.style.display = this.value === 'custom' ? 'block' : 'none';
         });
     }
+
+    // Close filters when clicking outside
+    document.addEventListener('click', function (e) {
+        if (filters && toggleBtn) {
+            if (!filters.contains(e.target) && !toggleBtn.contains(e.target)) {
+                filters.style.display = 'none';
+            }
+        }
+    });
 });

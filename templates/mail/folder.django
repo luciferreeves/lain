@@ -1,3 +1,12 @@
-{% extends 'layouts/mailbox.django' %} {% block scripts %}
+{% extends 'layouts/mailbox.django' %}
+
+{% block extra_content %}
+  <div id="mail-preferences" data-mark-as-read="{{ Preferences.MarkMessagesAsRead }}" data-show-address="{{ Preferences.ShowEmailAddressWithDisplayName|lower }}" data-display-html="{{ Preferences.DisplayHTML|lower }}" data-load-remote="{{ Preferences.LoadRemoteContent }}" style="display: none;"></div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'js/shadow.js' %}"></script>
+  <script src="{% static 'js/mail.js' %}"></script>
   <script src="{% static 'js/filters.js' %}"></script>
 {% endblock %}

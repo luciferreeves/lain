@@ -1,7 +1,6 @@
 package format
 
 import (
-	"html"
 	"lain/types"
 	"time"
 )
@@ -92,8 +91,4 @@ func formatTime(date time.Time, timeFormat types.TimeFormat) string {
 	default:
 		return date.Format("15:04")
 	}
-}
-
-func DecodeHTML(text string) string {
-	return html.UnescapeString(text)
 }

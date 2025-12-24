@@ -1,4 +1,6 @@
-{% extends 'layouts/main.django' %} {% block content %}
+{% extends 'layouts/main.django' %}
+
+{% block content %}
   <div class="mailbox">
     <aside class="sidebar">
       {% include 'partials/sidebar.django' %}
@@ -12,4 +14,12 @@
       {% include 'partials/preview.django' %}
     </section>
   </div>
+  {% block extra_content %}
+
+  {% endblock %}
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}
