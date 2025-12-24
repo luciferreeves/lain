@@ -583,19 +583,19 @@ input[type="date"]:focus {
     background: var(--bg-primary);
     border-right: 1px solid var(--border-color);
     overflow-y: auto;
-    padding: 4px;
+    padding: 0px;
 }
 
 .email-row {
     display: grid;
-    grid-template-columns: 18px 18px 1fr 70px;
-    gap: 6px;
+    grid-template-columns: 16px 1fr 64px;
+    gap: 8px;
     align-items: center;
-    padding: 8px;
+    padding: 8px 10px;
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    margin-bottom: 3px;
+    border-bottom: 1px solid var(--border-color);
     cursor: pointer;
+    transition: background 0.1s;
 }
 
 .email-row:hover {
@@ -603,57 +603,66 @@ input[type="date"]:focus {
 }
 
 .email-row.active {
-    border-left: 2px solid var(--accent-primary);
+    background: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-primary);
+    padding-left: 7px;
 }
 
 .email-row.unread {
-    border-left: 2px solid var(--accent-tertiary);
+    border-left: 3px solid var(--accent-tertiary);
+    padding-left: 7px;
 }
 
 .email-row.unread .email-from,
 .email-row.unread .email-subject {
     font-weight: bold;
-}
-
-.email-checkbox input {
-    width: 14px;
-    height: 14px;
-    cursor: pointer;
+    color: var(--text-primary);
 }
 
 .email-flag {
-    width: 14px;
-    height: 14px;
-    opacity: 0.3;
+    width: 16px;
+    height: 16px;
+    font-size: 14px;
+    color: var(--text-muted);
     cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.email-flag:hover {
+    color: var(--accent-secondary);
 }
 
 .email-flag.flagged {
-    opacity: 1;
+    color: var(--accent-secondary);
 }
 
 .email-info {
     overflow: hidden;
+    min-width: 0;
 }
 
 .email-from {
     font-size: 11px;
-    margin-bottom: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .email-subject {
-    color: var(--accent-primary);
-    font-size: 11px;
-    margin-bottom: 2px;
+    color: var(--text-primary);
+    font-size: 12px;
+    margin-bottom: 3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.email-preview {
+.email-snippet {
     color: var(--text-muted);
     font-size: 10px;
     white-space: nowrap;
@@ -665,12 +674,19 @@ input[type="date"]:focus {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: 4px;
+    flex-shrink: 0;
 }
 
 .email-date {
     color: var(--text-muted);
-    font-size: 9px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.attachment-icon {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 .empty-state {
@@ -680,6 +696,21 @@ input[type="date"]:focus {
     height: 100%;
     color: var(--text-muted);
     font-size: 12px;
+}
+
+.no-subject,
+.no-content {
+    font-style: italic;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.email-preview {
+    color: var(--text-muted);
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .preview {
@@ -694,12 +725,6 @@ input[type="date"]:focus {
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
-}
-
-.email-subject {
-    color: var(--accent-primary);
-    font-size: 16px;
-    font-weight: bold;
 }
 
 .email-actions {

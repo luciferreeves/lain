@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"lain/models"
-	"lain/repository"
+	"lain/services"
 	"lain/session"
 	"lain/utils/meta"
 	"lain/utils/shortcuts"
@@ -16,25 +16,22 @@ func Mailbox(context *fiber.Ctx) error {
 		folderPath = "inbox"
 	}
 
-	email, err := session.GetSessionEmail(context)
+	userEmail, err := session.GetSessionEmail(context)
 	if err != nil {
 		return InternalServerError(context, err)
 	}
 
 	prefs := context.Locals("Preferences").(*models.Preferences)
 
-	folders := repository.GetFolders(email, folderPath)
-	displayName := repository.GetFolderDisplayName(email, folderPath)
+	folders := services.GetFolders(userEmail, folderPath)
+	displayName := services.GetFolderDisplayName(userEmail, folderPath)
 
 	page := context.QueryInt("page", 1)
 	if page < 1 {
 		page = 1
 	}
 
-	limit := prefs.EmailsPerPage
-	offset := (page - 1) * limit
-
-	emails, err := repository.GetEmails(email, folderPath, limit, offset)
+	emails, err := services.GetEmails(userEmail, folderPath, prefs, page)
 	if err != nil {
 		emails = []fiber.Map{}
 	}

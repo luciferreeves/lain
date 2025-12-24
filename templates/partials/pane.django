@@ -1,28 +1,37 @@
 <div class="pane">
   {% if Emails %}
     {% for email in Emails %}
-      <div class="email-row {% if not email.IsRead %}unread{% endif %} {% if email.Active %}active{% endif %}" data-email-id="{{ email.ID }}">
-        <div class="email-checkbox">
-          <input type="checkbox" />
-        </div>
-
-        <div class="email-flag {% if email.IsFlagged %}flagged{% endif %}">
-          {% comment %}
-          <img src="{% static 'icons/flag.svg' %}" alt="Flag" />
-          (We will write the static filter later){% endcomment %}
-        </div>
+      <div class="email-row {% if not email.IsRead %}unread{% endif %}" data-email-id="{{ email.ID }}">
+        <div class="email-flag {% if email.IsFlagged %}flagged{% endif %}"
+          title="{% if email.IsFlagged %}
+            Unflag
+          {% else %}
+            Flag
+          {% endif %}">⚑</div>
 
         <div class="email-info">
           <div class="email-from">{{ email.FromName }}</div>
-          <div class="email-subject">{{ email.Subject }}</div>
-          <div class="email-preview">{{ email.Preview }}</div>
+          <div class="email-subject">
+            {% if email.Subject %}
+              {{ email.Subject }}
+            {% else %}
+              <span class="no-subject">[No Subject]</span>
+            {% endif %}
+          </div>
+          <div class="email-snippet">
+            {% if email.Snippet %}
+              {{ email.Snippet }}
+            {% else %}
+              <span class="no-content">[Empty Content]</span>
+            {% endif %}
+          </div>
         </div>
 
         <div class="email-meta">
-          {% if email.HasAttachments %}
-            <span class="attachment-icon">📎</span>
+          {% if email.HasAttachment %}
+            <span class="attachment-icon" title="Has attachments">📎</span>
           {% endif %}
-          <span class="email-date">{{ email.Date }}</span>
+          <span class="email-date">{{ email.DateFormatted }}</span>
         </div>
       </div>
     {% endfor %}
