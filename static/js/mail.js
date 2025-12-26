@@ -258,15 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function createBody(email) {
         const body = document.createElement('div');
         body.className = 'email-body';
-
-        // Respect DisplayHTML preference
         const displayHTML = prefs.DisplayHTML;
 
         if (displayHTML && email.Body) {
-            // Use ShadowRenderer library to encapsulate styles
             const shadow = ShadowRenderer.render(body, email.Body);
-
-            // Handle remote content based on LoadRemoteContent preference
             handleRemoteContent(shadow);
         } else {
             const pre = document.createElement('pre');
