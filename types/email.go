@@ -33,6 +33,7 @@ type EmailMessage struct {
 	Date          time.Time
 	BodyText      string
 	BodyHTML      string
+	RawHeaders    string
 	Size          uint32
 	InReplyTo     string
 	IsRead        bool

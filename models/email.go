@@ -7,37 +7,37 @@ import (
 )
 
 type Email struct {
-	gorm.Model
-	UserEmail string
-	FolderID  uint
-	Folder    Folder `gorm:"foreignKey:FolderID"`
-
-	UID       uint32 `gorm:"index"`
-	MessageID string `gorm:"index"`
-
-	From     string
-	FromName string
-	To       string
-	CC       string
-	BCC      string
-	ReplyTo  string
-
-	Subject string
-	Date    time.Time `gorm:"index"`
-
-	BodyText string `gorm:"type:text"`
-	BodyHTML string `gorm:"type:text"`
-	Snippet  string
-
-	IsRead        bool `gorm:"default:false;index"`
-	IsFlagged     bool `gorm:"default:false;index"`
+	ID            uint   `gorm:"primaryKey"`
+	UserEmail     string `gorm:"index:idx_user_folder,priority:1;not null"`
+	FolderID      uint   `gorm:"index:idx_user_folder,priority:2;not null"`
+	UID           uint32 `gorm:"not null"`
+	MessageID     string `gorm:"index"`
+	From          string `gorm:"not null"`
+	FromName      string
+	To            string `gorm:"not null"`
+	CC            string
+	BCC           string
+	ReplyTo       string
+	Subject       string
+	Date          time.Time `gorm:"index"`
+	BodyText      string    `gorm:"type:text"`
+	BodyHTML      string    `gorm:"type:text"`
+	RawHeaders    string    `gorm:"type:text"`
+	Snippet       string
+	Size          int64
+	InReplyTo     string
+	IsRead        bool `gorm:"default:false"`
+	IsFlagged     bool `gorm:"default:false"`
 	IsAnswered    bool `gorm:"default:false"`
 	IsDraft       bool `gorm:"default:false"`
-	HasAttachment bool `gorm:"default:false;index"`
+	HasAttachment bool `gorm:"default:false"`
 
-	Size       int64
-	InReplyTo  string
-	References string
+	Folder      Folder       `gorm:"foreignKey:FolderID"`
+	Attachments []Attachment `gorm:"foreignKey:EmailID"`
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type Attachment struct {

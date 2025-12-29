@@ -7,18 +7,10 @@ import (
 )
 
 func SanitizeHTML(htmlContent string) string {
-	// Remove dangerous tags
 	htmlContent = removeDangerousTags(htmlContent)
-
-	// Remove inline event handlers
 	htmlContent = removeEventHandlers(htmlContent)
-
-	// Remove javascript: protocol
 	htmlContent = removeJavascriptProtocol(htmlContent)
-
-	// Sanitize styles
 	htmlContent = sanitizeStyles(htmlContent)
-
 	return htmlContent
 }
 
@@ -49,7 +41,6 @@ func removeJavascriptProtocol(html string) string {
 }
 
 func sanitizeStyles(html string) string {
-	// Remove dangerous CSS properties
 	dangerousStyles := []string{"behavior", "expression", "binding", "import", "moz-binding"}
 
 	for _, style := range dangerousStyles {
@@ -125,6 +116,46 @@ func StripHTML(html string) string {
 	}
 
 	return strings.TrimSpace(strings.Join(cleanLines, " "))
+}
+
+func HTMLToPlainText(htmlContent string) string {
+	text := htmlContent
+
+	text = regexp.MustCompile(`(?i)<style[^>]*>[\s\S]*?</style>`).ReplaceAllString(text, "")
+	text = regexp.MustCompile(`(?i)<script[^>]*>[\s\S]*?</script>`).ReplaceAllString(text, "")
+	text = regexp.MustCompile(`(?i)<head[^>]*>[\s\S]*?</head>`).ReplaceAllString(text, "")
+	text = regexp.MustCompile(`(?i)<title[^>]*>[\s\S]*?</title>`).ReplaceAllString(text, "")
+
+	text = regexp.MustCompile(`(?i)<br\s*/?>`).ReplaceAllString(text, "\n")
+	text = regexp.MustCompile(`(?i)</p>`).ReplaceAllString(text, "\n\n")
+	text = regexp.MustCompile(`(?i)</div>`).ReplaceAllString(text, "\n")
+	text = regexp.MustCompile(`(?i)</tr>`).ReplaceAllString(text, "\n")
+	text = regexp.MustCompile(`(?i)</h[1-6]>`).ReplaceAllString(text, "\n\n")
+	text = regexp.MustCompile(`(?i)</li>`).ReplaceAllString(text, "\n")
+
+	text = regexp.MustCompile(`<[^>]+>`).ReplaceAllString(text, "")
+
+	text = strings.ReplaceAll(text, "&nbsp;", " ")
+	text = strings.ReplaceAll(text, "&lt;", "<")
+	text = strings.ReplaceAll(text, "&gt;", ">")
+	text = strings.ReplaceAll(text, "&amp;", "&")
+	text = strings.ReplaceAll(text, "&quot;", "\"")
+	text = strings.ReplaceAll(text, "&#39;", "'")
+	text = strings.ReplaceAll(text, "&#x27;", "'")
+
+	text = regexp.MustCompile(`\n\s*\n\s*\n+`).ReplaceAllString(text, "\n\n")
+	text = regexp.MustCompile(`[ \t]+`).ReplaceAllString(text, " ")
+
+	lines := strings.Split(text, "\n")
+	var cleanLines []string
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" {
+			cleanLines = append(cleanLines, trimmed)
+		}
+	}
+
+	return strings.TrimSpace(strings.Join(cleanLines, "\n"))
 }
 
 func DecodeHTML(text string) string {

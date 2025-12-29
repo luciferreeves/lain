@@ -1,6 +1,7 @@
 package email
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"lain/types"
@@ -17,14 +18,14 @@ func SelectFolder(client *types.EmailClient, folderName string) (*imap.MailboxSt
 	return mbox, nil
 }
 
-func FetchMessages(client *types.EmailClient, folderName string, limit uint32) ([]*types.EmailMessage, error) {
-	mbox, err := SelectFolder(client, folderName)
+func FetchMessages(client *types.EmailClient, folderName string, limit uint32) ([]types.EmailMessage, error) {
+	mbox, err := client.Select(folderName, false)
 	if err != nil {
 		return nil, err
 	}
 
 	if mbox.Messages == 0 {
-		return []*types.EmailMessage{}, nil
+		return []types.EmailMessage{}, nil
 	}
 
 	from := uint32(1)
@@ -39,14 +40,24 @@ func FetchMessages(client *types.EmailClient, folderName string, limit uint32) (
 	messages := make(chan *imap.Message, 10)
 	done := make(chan error, 1)
 
-	section := &imap.BodySectionName{}
-	items := []imap.FetchItem{imap.FetchEnvelope, imap.FetchFlags, imap.FetchUid, imap.FetchRFC822Size, section.FetchItem()}
+	section := &imap.BodySectionName{Peek: true}
+	headerSection := &imap.BodySectionName{Peek: true}
+
+	items := []imap.FetchItem{
+		imap.FetchEnvelope,
+		imap.FetchFlags,
+		imap.FetchUid,
+		imap.FetchRFC822Size,
+		section.FetchItem(),
+		headerSection.FetchItem(),
+	}
 
 	go func() {
 		done <- client.Fetch(seqset, items, messages)
 	}()
 
-	var result []*types.EmailMessage
+	var result []types.EmailMessage
+
 	for msg := range messages {
 		if msg == nil {
 			continue
@@ -57,11 +68,11 @@ func FetchMessages(client *types.EmailClient, folderName string, limit uint32) (
 			continue
 		}
 
-		result = append(result, emailMsg)
+		result = append(result, *emailMsg)
 	}
 
 	if err := <-done; err != nil {
-		return nil, fmt.Errorf("failed to fetch messages: %w", err)
+		return nil, err
 	}
 
 	return result, nil
@@ -72,13 +83,28 @@ func parseMessage(msg *imap.Message) (*types.EmailMessage, error) {
 		return nil, fmt.Errorf("message envelope is nil")
 	}
 
-	section := &imap.BodySectionName{}
+	section := &imap.BodySectionName{Peek: true}
 	bodyReader := msg.GetBody(section)
 	if bodyReader == nil {
 		return nil, fmt.Errorf("message body is nil")
 	}
 
-	mr, err := mail.CreateReader(bodyReader)
+	fullMessage, err := io.ReadAll(bodyReader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read message: %w", err)
+	}
+
+	headerEnd := bytes.Index(fullMessage, []byte("\r\n\r\n"))
+	if headerEnd == -1 {
+		headerEnd = bytes.Index(fullMessage, []byte("\n\n"))
+	}
+
+	var rawHeaders string
+	if headerEnd != -1 {
+		rawHeaders = string(fullMessage[:headerEnd])
+	}
+
+	mr, err := mail.CreateReader(bytes.NewReader(fullMessage))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create mail reader: %w", err)
 	}
@@ -100,9 +126,10 @@ func parseMessage(msg *imap.Message) (*types.EmailMessage, error) {
 			contentType, _, _ := h.ContentType()
 			body, _ := io.ReadAll(part.Body)
 
-			if contentType == "text/plain" {
+			switch contentType {
+			case "text/plain":
 				bodyText = string(body)
-			} else if contentType == "text/html" {
+			case "text/html":
 				bodyHTML = string(body)
 			}
 
@@ -127,7 +154,12 @@ func parseMessage(msg *imap.Message) (*types.EmailMessage, error) {
 
 	var toList []string
 	for _, addr := range msg.Envelope.To {
-		toList = append(toList, addr.MailboxName+"@"+addr.HostName)
+		email := addr.MailboxName + "@" + addr.HostName
+		if addr.PersonalName != "" {
+			toList = append(toList, addr.PersonalName+" <"+email+">")
+		} else {
+			toList = append(toList, email)
+		}
 	}
 
 	var ccList []string
@@ -176,6 +208,7 @@ func parseMessage(msg *imap.Message) (*types.EmailMessage, error) {
 		Date:          msg.Envelope.Date,
 		BodyText:      bodyText,
 		BodyHTML:      bodyHTML,
+		RawHeaders:    rawHeaders,
 		Size:          msg.Size,
 		InReplyTo:     msg.Envelope.InReplyTo,
 		IsRead:        isRead,
@@ -196,7 +229,7 @@ func MarkAsRead(client *types.EmailClient, folderName string, uid uint32) error 
 	seqSet.AddNum(uid)
 
 	item := imap.FormatFlagsOp(imap.AddFlags, true)
-	flags := []interface{}{imap.SeenFlag}
+	flags := []any{imap.SeenFlag}
 
 	if err := client.UidStore(seqSet, item, flags, nil); err != nil {
 		return fmt.Errorf("failed to mark as read: %w", err)
@@ -220,7 +253,7 @@ func ToggleFlag(client *types.EmailClient, folderName string, uid uint32, isFlag
 		item = imap.FormatFlagsOp(imap.AddFlags, true)
 	}
 
-	flags := []interface{}{imap.FlaggedFlag}
+	flags := []any{imap.FlaggedFlag}
 
 	if err := client.UidStore(seqSet, item, flags, nil); err != nil {
 		return fmt.Errorf("failed to toggle flag: %w", err)

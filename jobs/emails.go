@@ -60,6 +60,7 @@ func SyncEmails(userEmail string, folderID uint, folderPath string) error {
 			Date:          msg.Date,
 			BodyText:      msg.BodyText,
 			BodyHTML:      msg.BodyHTML,
+			RawHeaders:    msg.RawHeaders,
 			Snippet:       snippet,
 			Size:          int64(msg.Size),
 			InReplyTo:     msg.InReplyTo,

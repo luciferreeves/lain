@@ -65,7 +65,11 @@ func GetEmailDetails(userEmail string, emailID uint) (fiber.Map, error) {
 		return nil, err
 	}
 
-	// Get attachments
+	prefs, err := repository.GetPreferencesByEmail(userEmail)
+	if err != nil {
+		return nil, err
+	}
+
 	attachments, _ := repository.GetAttachmentsByEmailID(emailID)
 
 	var attachmentMaps []fiber.Map
@@ -78,7 +82,6 @@ func GetEmailDetails(userEmail string, emailID uint) (fiber.Map, error) {
 		})
 	}
 
-	// Sanitize HTML body
 	body := message.BodyHTML
 	if body == "" {
 		body = "<pre>" + format.DecodeHTML(message.BodyText) + "</pre>"
@@ -86,18 +89,37 @@ func GetEmailDetails(userEmail string, emailID uint) (fiber.Map, error) {
 		body = format.SanitizeHTML(body)
 	}
 
+	bodyText := message.BodyText
+	if bodyText == "" && message.BodyHTML != "" {
+		bodyText = format.HTMLToPlainText(message.BodyHTML)
+	}
+
+	fromName := message.FromName
+	fromEmail := message.From
+	fromFormatted := fromEmail
+	if fromName != "" && fromName != fromEmail {
+		fromFormatted = fromName + " <" + fromEmail + ">"
+	}
+
+	toFormatted := message.To
+
 	return fiber.Map{
-		"ID":          message.ID,
-		"Subject":     format.DecodeHTML(message.Subject),
-		"From":        format.DecodeHTML(message.From),
-		"FromName":    format.DecodeHTML(message.FromName),
-		"To":          format.DecodeHTML(message.To),
-		"CC":          format.DecodeHTML(message.CC),
-		"Date":        message.Date,
-		"Body":        body,
-		"IsRead":      message.IsRead,
-		"IsFlagged":   message.IsFlagged,
-		"Attachments": attachmentMaps,
+		"ID":            message.ID,
+		"MessageID":     message.MessageID,
+		"Subject":       format.DecodeHTML(message.Subject),
+		"From":          format.DecodeHTML(fromFormatted),
+		"FromName":      format.DecodeHTML(fromName),
+		"FromEmail":     format.DecodeHTML(fromEmail),
+		"To":            format.DecodeHTML(toFormatted),
+		"CC":            format.DecodeHTML(message.CC),
+		"Date":          message.Date,
+		"DateFormatted": format.FormatEmailDate(message.Date, prefs.DateFormat, prefs.TimeFormat, prefs.PrettyDates, prefs.TimeZone),
+		"Body":          body,
+		"BodyText":      format.DecodeHTML(bodyText),
+		"RawHeaders":    message.RawHeaders,
+		"IsRead":        message.IsRead,
+		"IsFlagged":     message.IsFlagged,
+		"Attachments":   attachmentMaps,
 	}, nil
 }
 
