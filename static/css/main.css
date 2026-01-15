@@ -625,6 +625,7 @@ input[type="date"]:focus {
     font-size: 14px;
     color: var(--text-muted);
     cursor: pointer;
+    -webkit-user-select: none;
     user-select: none;
     display: flex;
     align-items: center;
@@ -1139,6 +1140,8 @@ input[type="date"]:focus {
 
 .sender-menu-item svg {
     flex-shrink: 0;
+    width: 14px;
+    height: 14px;
 }
 
 /* Email Header Redesign */
@@ -1376,7 +1379,7 @@ input[type="date"]:focus {
 
 .email-card-header {
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
 }
 
 .header-top-row {
@@ -1414,6 +1417,7 @@ input[type="date"]:focus {
     justify-content: center;
     gap: 2px;
     border-radius: 4px;
+    color: wheat;
 }
 
 .card-action-btn:hover {
@@ -1421,6 +1425,7 @@ input[type="date"]:focus {
 }
 
 .card-action-btn.active {
+    color: black;
     background: var(--accent-primary);
 }
 
